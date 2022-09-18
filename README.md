@@ -42,7 +42,7 @@ This configuration is designed for a remote data server, either run locally or r
     git clone https://git.sr.ht/~bossley9/dataserver nixos
     mv /mnt/etc/nixos/hardware-configuration.nix nixos/
     rm -r /mnt/etc/nixos
-    mv nixos /mnt/etc
+    mv nixos /mnt/etc/
     ```
 9. Create a `secrets.nix` file for server-specific details.
     ```nix
