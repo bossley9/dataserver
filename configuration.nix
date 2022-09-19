@@ -10,6 +10,8 @@ let
 in
   assert secrets.hostname != "";
   assert secrets.ethInterface != "";
+  assert secrets.minifluxAdminUsername != "";
+  assert secrets.minifluxAdminPassword != "";
 
 {
   imports = [
@@ -17,7 +19,6 @@ in
   ];
 
   # boot {{{
-
   boot.loader.grub = {
     enable = true;
     version = 2;
@@ -28,19 +29,15 @@ in
   boot.cleanTmpDir = true;
   boot.tmpOnTmpfs = true;
   boot.tmpOnTmpfsSize = "5%";
-
   # }}}
 
   # networking {{{
-
   networking.useDHCP = false; # False recommended for security
   networking.interfaces.${secrets.ethInterface}.useDHCP = true;
   networking.hostName = secrets.hostname;
-
   # }}}
 
   # localization {{{
-
   services.timesyncd.enable = true;
   time.timeZone = "America/Los_Angeles";
   i18n.defaultLocale = "en_US.UTF-8";
@@ -48,11 +45,9 @@ in
     font = "Lat2-Terminus16";
     keyMap = "us";
   };
-
   # }}}
 
   # user space {{{
-
   users.mutableUsers = false;
   users.users.nixos = {
     isNormalUser = true;
@@ -66,10 +61,12 @@ in
     vim git
   ];
 
+  environment.shellInit = ''
+    umask 0077
+  '';
   # }}}
 
   # security and access {{{
-
   security.sudo.enable = false;
   security.doas = {
     enable = true;
@@ -93,25 +90,41 @@ in
 
   networking.firewall = {
     enable = true;
-    # allowedTCPPorts = [ ... ];
+    allowedTCPPorts = [
+      22 # OpenSSH (automatically allowed but explicitly adding for sanity)
+      8001 # Miniflux
+    ];
     # allowedUDPPorts = [ ... ];
   };
-
   # }}}
 
   # optimization {{{
-
   # Reduce systemd journaling
   services.journald.extraConfig =
   ''
     SystemMaxUse=250M
     MaxRetentionSec=7day
   '';
+  # }}}
 
+  # miniflux {{{
+  services.miniflux = {
+    enable = true;
+    adminCredentialsFile = builtins.toFile "miniflux-admin-credentials" ''
+      ADMIN_USERNAME=${secrets.minifluxAdminUsername}
+      ADMIN_PASSWORD=${secrets.minifluxAdminPassword}
+    '';
+    config = {
+      WORKER_POOL_SIZE = "5"; # number of background workers
+      POLLING_FREQUENCY = "60"; # feed refresh interval in minutes
+      BATCH_SIZE = "100"; # number of feeds sent to queue each interval
+      LISTEN_ADDR = "0.0.0.0:8001"; # address to listen on, 0.0.0.0 works better than localhost
+      CLEANUP_ARCHIVE_READ_DAYS = "60"; # read items are removed after x days
+    };
+  };
   # }}}
 
   # required {{{
-
   # Copy the NixOS configuration file and link it from the resulting system
   # (/run/current-system/configuration.nix). This is useful in case you
   # accidentally delete configuration.nix.
@@ -124,7 +137,6 @@ in
   # Before changing this value read the documentation for this option
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
   system.stateVersion = "22.05"; # Did you read the comment?
-
   # }}}
 }
 

@@ -48,8 +48,10 @@ This configuration is designed for a remote data server, either run locally or r
     ```nix
     # (inside /mnt/etc/nixos/secrets.nix)
     {
-      hostname = "my_hostname";
+      hostname = "myhostname";
       ethInterface = "myEthInterface";
+      minifluxAdminUsername = "myAdminUsername";
+      minifluxAdminPassword = "myPassword";
     }
     ```
 10. Copy SSH public keys for server access. If you do not do this, you will be locked out of the server.
