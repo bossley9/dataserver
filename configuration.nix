@@ -33,7 +33,7 @@ in
 
   # networking {{{
 
-  networking.useDHCP = false; # False recommended for security reasons.
+  networking.useDHCP = false; # False recommended for security
   networking.interfaces.${secrets.ethInterface}.useDHCP = true;
   networking.hostName = secrets.hostname;
 
@@ -61,6 +61,7 @@ in
     openssh.authorizedKeys.keys = lib.strings.splitString "\n" (builtins.readFile ./keys.pub);
   };
 
+  environment.defaultPackages = lib.mkForce []; # Remove default packages for security
   environment.systemPackages = with pkgs; [
     vim git
   ];
@@ -76,19 +77,31 @@ in
       { groups = [ "wheel" ]; noPass = true; keepEnv = true; }
     ];
   };
-  security.lockKernelModules = true; # disable loading kernel modules after boot
+  nix.allowedUsers = [ "@wheel" ];
+  security.lockKernelModules = true; # Disable loading kernel modules after boot
 
   services.openssh = {
     enable = true;
     permitRootLogin = "no";
     passwordAuthentication = false;
+    allowSFTP = false;
+    forwardX11 = false;
+    extraConfig = ''
+      AuthenticationMethods publickey
+    '';
+  };
+
+  networking.firewall = {
+    enable = true;
+    # allowedTCPPorts = [ ... ];
+    # allowedUDPPorts = [ ... ];
   };
 
   # }}}
 
   # optimization {{{
 
-  # reduce systemd journaling
+  # Reduce systemd journaling
   services.journald.extraConfig =
   ''
     SystemMaxUse=250M
@@ -97,11 +110,7 @@ in
 
   # }}}
 
-  # Open ports in the firewall.
-  # networking.firewall.allowedTCPPorts = [ ... ];
-  # networking.firewall.allowedUDPPorts = [ ... ];
-  # Or disable the firewall altogether.
-  # networking.firewall.enable = false;
+  # required {{{
 
   # Copy the NixOS configuration file and link it from the resulting system
   # (/run/current-system/configuration.nix). This is useful in case you
@@ -115,5 +124,7 @@ in
   # Before changing this value read the documentation for this option
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
   system.stateVersion = "22.05"; # Did you read the comment?
+
+  # }}}
 }
 
