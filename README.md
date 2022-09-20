@@ -54,6 +54,7 @@ This configuration is designed for a remote data server, either run locally or r
       minifluxDomain = "news.example.com";
       minifluxAdminUsername = "myAdminUsername";
       minifluxAdminPassword = "myPassword";
+      feedmeDomain = "feedme.example.com";
     }
     ```
 10. Copy SSH public keys for server access. If you do not do this, you will be locked out of the server.

@@ -8,6 +8,7 @@
 let
   secrets = import ./secrets.nix;
   minifluxPort = 8001;
+  feedmePort = 8002;
 
 in
   assert secrets.hostname != "";
@@ -92,7 +93,6 @@ in
     enable = true;
     allowedTCPPorts = [
       22 # OpenSSH (automatically allowed but explicitly adding for sanity)
-      8002 # Feedme
       80 443 # HTTP and HTTPS
     ];
     # allowedUDPPorts = [ ... ];
@@ -129,7 +129,7 @@ in
   services.feedme = {
     enable = true;
     domainName = "0.0.0.0";
-    port = 8002;
+    port = feedmePort;
   };
   # }}}
 
@@ -143,6 +143,11 @@ in
         forceSSL = true;
         enableACME = true;
         locations."/".proxyPass = "http://localhost:${builtins.toString minifluxPort}";
+      };
+      "${secrets.feedmeDomain}" = {
+        forceSSL = true;
+        enableACME = true;
+        locations."/".proxyPass = "http://localhost:${builtins.toString feedmePort}";
       };
     };
   };
