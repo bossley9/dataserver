@@ -16,6 +16,7 @@ in
 {
   imports = [
     ./hardware-configuration.nix
+    ./modules/feedme.nix
   ];
 
   # boot {{{
@@ -25,10 +26,6 @@ in
     device = "/dev/vda";
   };
   boot.loader.timeout = 2;
-
-  boot.cleanTmpDir = true;
-  boot.tmpOnTmpfs = true;
-  boot.tmpOnTmpfsSize = "5%";
   # }}}
 
   # networking {{{
@@ -93,6 +90,7 @@ in
     allowedTCPPorts = [
       22 # OpenSSH (automatically allowed but explicitly adding for sanity)
       8001 # Miniflux
+      8002 # Feedme
     ];
     # allowedUDPPorts = [ ... ];
   };
@@ -121,6 +119,14 @@ in
       LISTEN_ADDR = "0.0.0.0:8001"; # address to listen on, 0.0.0.0 works better than localhost
       CLEANUP_ARCHIVE_READ_DAYS = "60"; # read items are removed after x days
     };
+  };
+  # }}}
+
+  # feedme {{{
+  services.feedme = {
+    enable = true;
+    domainName = "0.0.0.0";
+    port = 8002;
   };
   # }}}
 
