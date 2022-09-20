@@ -7,11 +7,14 @@
 
 let
   secrets = import ./secrets.nix;
+  minifluxPort = 8001;
+
 in
   assert secrets.hostname != "";
   assert secrets.ethInterface != "";
   assert secrets.minifluxAdminUsername != "";
   assert secrets.minifluxAdminPassword != "";
+  assert secrets.email != "";
 
 {
   imports = [
@@ -89,8 +92,8 @@ in
     enable = true;
     allowedTCPPorts = [
       22 # OpenSSH (automatically allowed but explicitly adding for sanity)
-      8001 # Miniflux
       8002 # Feedme
+      80 443 # HTTP and HTTPS
     ];
     # allowedUDPPorts = [ ... ];
   };
@@ -116,7 +119,7 @@ in
       WORKER_POOL_SIZE = "5"; # number of background workers
       POLLING_FREQUENCY = "60"; # feed refresh interval in minutes
       BATCH_SIZE = "100"; # number of feeds sent to queue each interval
-      LISTEN_ADDR = "0.0.0.0:8001"; # address to listen on, 0.0.0.0 works better than localhost
+      LISTEN_ADDR = "0.0.0.0:${builtins.toString minifluxPort}"; # address to listen on, 0.0.0.0 works better than localhost
       CLEANUP_ARCHIVE_READ_DAYS = "60"; # read items are removed after x days
     };
   };
@@ -127,6 +130,21 @@ in
     enable = true;
     domainName = "0.0.0.0";
     port = 8002;
+  };
+  # }}}
+
+  # nginx (webserver and reverse proxies) {{{
+  security.acme.acceptTerms = true;
+  security.acme.defaults.email = secrets.email;
+  services.nginx = {
+    enable = true;
+    virtualHosts = {
+      "${secrets.minifluxDomain}" = {
+        forceSSL = true;
+        enableACME = true;
+        locations."/".proxyPass = "http://localhost:${builtins.toString minifluxPort}";
+      };
+    };
   };
   # }}}
 

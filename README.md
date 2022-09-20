@@ -50,6 +50,8 @@ This configuration is designed for a remote data server, either run locally or r
     {
       hostname = "myhostname";
       ethInterface = "myEthInterface";
+      email = "alice@doe.com"; # only required for TLS certificates
+      minifluxDomain = "news.example.com";
       minifluxAdminUsername = "myAdminUsername";
       minifluxAdminPassword = "myPassword";
     }
