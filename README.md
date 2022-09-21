@@ -44,7 +44,7 @@ This configuration is designed for a remote data server, either run locally or r
     rm -r /mnt/etc/nixos
     mv nixos /mnt/etc/
     ```
-9. Create a `secrets.nix` file for server-specific details. Make sure the domains do not include protocols. Since you will be creating a new vault, you will need to add the property `isFirstRun = true` to allow access. **Once you have created a Bitwarden vault, you should remove this to disallow new vault creation.**
+9. Create a `secrets.nix` file for server-specific details. Make sure the domains do not include protocols. On the first run, you will need to add the property `isFirstRun = true` to allow access to vault creation, setting a Miniflux admin password, and other details. **Once you have created a Bitwarden vault and all necessary other account initialization, you should remove this to disallow new vault creation.**
     ```nix
     # (inside /mnt/etc/nixos/secrets.nix)
     {
@@ -52,11 +52,12 @@ This configuration is designed for a remote data server, either run locally or r
       ethInterface = "myEthInterface";
       email = "alice@doe.com"; # only required for TLS certificates
       minifluxDomain = "news.example.com";
-      minifluxAdminUsername = "myAdminUsername";
-      minifluxAdminPassword = "myPassword";
       feedmeDomain = "feedme.example.com";
       bitwardenDomain = "vault.example.com";
+      # on first run
       isFirstRun = true;
+      minifluxInitialAdminUsername = "myInitialAdminUsername";
+      minifluxInitialAdminPassword = "myInitialPassword";
     }
     ```
 10. Copy SSH public keys for server access. If you do not do this, you will be locked out of the server.

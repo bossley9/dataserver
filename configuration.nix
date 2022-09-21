@@ -7,8 +7,10 @@
 
 let
   secrets = import ./secrets.nix;
+  isFirstRun = if secrets ? isFirstRun then secrets.isFirstRun else false;
   userHome = /home/nixos;
   gitHome = /home/git;
+  vaultHome = /home/vault;
   minifluxPort = 8001;
   feedmePort = 8002;
   bitwardenPort = 8003;
@@ -18,8 +20,6 @@ in
   assert secrets.ethInterface != "";
   assert secrets.email != "";
   assert secrets.minifluxDomain != "";
-  assert secrets.minifluxAdminUsername != "";
-  assert secrets.minifluxAdminPassword != "";
   assert secrets.feedmeDomain != "";
   assert secrets.bitwardenDomain != "";
 
@@ -124,11 +124,10 @@ in
   # miniflux {{{
   services.miniflux = {
     enable = true;
-    adminCredentialsFile = builtins.toFile "miniflux-admin-credentials" ''
-      ADMIN_USERNAME=${secrets.minifluxAdminUsername}
-      ADMIN_PASSWORD=${secrets.minifluxAdminPassword}
-    '';
     config = {
+      CREATE_ADMIN = if isFirstRun then 1 else "";
+      ADMIN_USERNAME = if secrets ? minifluxInitialAdminUsername then secrets.minifluxInitialAdminUsername else "";
+      ADMIN_PASSWORD = if secrets ? minifluxInitialAdminPassword then secrets.minifluxInitialAdminPassword else "";
       WORKER_POOL_SIZE = "5"; # number of background workers
       POLLING_FREQUENCY = "60"; # feed refresh interval in minutes
       BATCH_SIZE = "100"; # number of feeds sent to queue each interval
@@ -161,11 +160,18 @@ in
   # }}}
 
   # bitwarden (vaultwarden) {{{
+  users.users.vaultwarden = {
+    isSystemUser = true;
+    description = "Bitwarden vault user";
+    createHome = true;
+    home = (builtins.toString vaultHome);
+  };
   services.vaultwarden = {
     enable = true;
+    backupDir = (builtins.toString vaultHome) + "/vault-backup";
     config = {
       DOMAIN = "https://" + secrets.bitwardenDomain;
-      SIGNUPS_ALLOWED = if secrets ? isFirstRun then secrets.isFirstRun else false;
+      SIGNUPS_ALLOWED = isFirstRun;
       ROCKET_ADDRESS = "0.0.0.0";
       ROCKET_PORT = bitwardenPort;
     };
