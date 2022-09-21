@@ -7,15 +7,21 @@
 
 let
   secrets = import ./secrets.nix;
+  userHome = /home/nixos;
+  gitHome = /home/git;
   minifluxPort = 8001;
   feedmePort = 8002;
+  bitwardenPort = 8003;
 
 in
   assert secrets.hostname != "";
   assert secrets.ethInterface != "";
+  assert secrets.email != "";
+  assert secrets.minifluxDomain != "";
   assert secrets.minifluxAdminUsername != "";
   assert secrets.minifluxAdminPassword != "";
-  assert secrets.email != "";
+  assert secrets.feedmeDomain != "";
+  assert secrets.bitwardenDomain != "";
 
 {
   imports = [
@@ -54,6 +60,7 @@ in
     isNormalUser = true;
     initialPassword = "test1234!";
     extraGroups = [ "wheel" ];
+    home = (builtins.toString userHome);
     openssh.authorizedKeys.keys = lib.strings.splitString "\n" (builtins.readFile ./keys.pub);
   };
 
@@ -148,8 +155,20 @@ in
     isNormalUser = true;
     description = "git user";
     createHome = true;
-    home = "/home/git";
+    home = (builtins.toString gitHome);
     openssh.authorizedKeys.keys = lib.strings.splitString "\n" (builtins.readFile ./keys.pub);
+  };
+  # }}}
+
+  # bitwarden (vaultwarden) {{{
+  services.vaultwarden = {
+    enable = true;
+    config = {
+      DOMAIN = "https://" + secrets.bitwardenDomain;
+      SIGNUPS_ALLOWED = if secrets ? isFirstRun then secrets.isFirstRun else false;
+      ROCKET_ADDRESS = "0.0.0.0";
+      ROCKET_PORT = bitwardenPort;
+    };
   };
   # }}}
 
@@ -168,6 +187,11 @@ in
         forceSSL = true;
         enableACME = true;
         locations."/".proxyPass = "http://localhost:${builtins.toString feedmePort}";
+      };
+      "${secrets.bitwardenDomain}" = {
+        forceSSL = true;
+        enableACME = true;
+        locations."/".proxyPass = "http://localhost:${builtins.toString bitwardenPort}";
       };
     };
   };
