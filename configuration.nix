@@ -124,10 +124,11 @@ in
   # miniflux {{{
   services.miniflux = {
     enable = true;
+    adminCredentialsFile = builtins.toFile "miniflux-admin-credentials" ''
+      ADMIN_USERNAME=${secrets.minifluxInitialAdminUsername}
+      ADMIN_PASSWORD=${secrets.minifluxInitialAdminPassword}
+    '';
     config = {
-      CREATE_ADMIN = if isFirstRun then 1 else "";
-      ADMIN_USERNAME = if secrets ? minifluxInitialAdminUsername then secrets.minifluxInitialAdminUsername else "";
-      ADMIN_PASSWORD = if secrets ? minifluxInitialAdminPassword then secrets.minifluxInitialAdminPassword else "";
       WORKER_POOL_SIZE = "5"; # number of background workers
       POLLING_FREQUENCY = "60"; # feed refresh interval in minutes
       BATCH_SIZE = "100"; # number of feeds sent to queue each interval
