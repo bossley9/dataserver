@@ -88,6 +88,7 @@ in
       AuthenticationMethods publickey
     '';
   };
+  services.sshguard.enable = true;
 
   networking.firewall = {
     enable = true;
@@ -100,6 +101,11 @@ in
   # }}}
 
   # optimization {{{
+  # Automatically garbage collect nix
+  nix.gc = {
+    automatic = true;
+    dates = "weekly";
+  };
   # Reduce systemd journaling
   services.journald.extraConfig =
   ''
@@ -130,6 +136,20 @@ in
     enable = true;
     domainName = "0.0.0.0";
     port = feedmePort;
+  };
+  # }}}
+
+  # git server {{{
+  programs.git = {
+    enable = true;
+    config.init.defaultBranch = "main";
+  };
+  users.users.git = {
+    isNormalUser = true;
+    description = "git user";
+    createHome = true;
+    home = "/home/git";
+    openssh.authorizedKeys.keys = lib.strings.splitString "\n" (builtins.readFile ./keys.pub);
   };
   # }}}
 
