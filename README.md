@@ -50,12 +50,14 @@ This configuration is designed for a remote data server, either run locally or r
     {
       hostname = "myhostname";
       ethInterface = "myEthInterface";
-      email = "alice@doe.com"; # only required for TLS certificates
+      email = "alice@doe.com"; # required for TLS certificates
       minifluxDomain = "news.example.com";
       minifluxInitialAdminUsername = "myInitialAdminUsername";
       minifluxInitialAdminPassword = "myInitialPassword";
       feedmeDomain = "feedme.example.com";
       bitwardenDomain = "vault.example.com";
+      bitwardenYubicoClientId = "12345";
+      bitwardenYubicoSecretKey = "ABCDEABCDEABCDEABCDE=";
       isFirstRun = true;
     }
     ```

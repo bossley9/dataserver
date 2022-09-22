@@ -171,8 +171,11 @@ in
     enable = true;
     backupDir = (builtins.toString vaultHome) + "/vault-backup";
     config = {
+      YUBICO_CLIENT_ID = if secrets ? bitwardenYubicoClientId then secrets.bitwardenYubicoClientId else "";
+      YUBICO_SECRET_KEY = if secrets ? bitwardenYubicoSecretKey then secrets.bitwardenYubicoSecretKey else "";
       DOMAIN = "https://" + secrets.bitwardenDomain;
       SIGNUPS_ALLOWED = isFirstRun;
+      INVITATIONS_ALLOWED = false;
       ROCKET_ADDRESS = "0.0.0.0";
       ROCKET_PORT = bitwardenPort;
     };
