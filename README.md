@@ -58,6 +58,7 @@ This configuration is designed for a remote data server, either run locally or r
       bitwardenDomain = "vault.example.com";
       bitwardenYubicoClientId = "12345";
       bitwardenYubicoSecretKey = "ABCDEABCDEABCDEABCDE=";
+      webserverDomain = "example.com";
       isFirstRun = true;
     }
     ```

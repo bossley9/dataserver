@@ -22,6 +22,7 @@ in
   assert secrets.minifluxDomain != "";
   assert secrets.feedmeDomain != "";
   assert secrets.bitwardenDomain != "";
+  assert secrets.webserverDomain != "";
 
 {
   imports = [
@@ -188,6 +189,11 @@ in
   services.nginx = {
     enable = true;
     virtualHosts = {
+      "${secrets.webserverDomain}" = {
+        forceSSL = true;
+        enableACME = true;
+        root = "/var/www/webserver";
+      };
       "${secrets.minifluxDomain}" = {
         forceSSL = true;
         enableACME = true;
