@@ -199,7 +199,7 @@ in
       "${secrets.webserverDomain}" = {
         forceSSL = true;
         enableACME = true;
-        root = "/var/www/webserver";
+        root = "/var/www/${secrets.webserverDomain}";
       };
       "${secrets.minifluxDomain}" = {
         forceSSL = true;
