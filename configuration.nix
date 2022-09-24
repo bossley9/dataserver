@@ -120,6 +120,13 @@ in
     SystemMaxUse=250M
     MaxRetentionSec=7day
   '';
+  services.cron = {
+    enable = true;
+    systemCronJobs = [
+      # Reboot on Sundays at 3 AM
+      "0 3 * * 0 root reboot"
+    ];
+  };
   # }}}
 
   # miniflux {{{
