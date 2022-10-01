@@ -14,6 +14,9 @@ let
   minifluxPort = 8001;
   feedmePort = 8002;
   bitwardenPort = 8003;
+  # initial values
+  adminUsername = "admin";
+  adminPassword = "test1234";
 
 in
   assert secrets.hostname != "";
@@ -22,6 +25,7 @@ in
   assert secrets.minifluxDomain != "";
   assert secrets.feedmeDomain != "";
   assert secrets.bitwardenDomain != "";
+  assert secrets.nextcloudDomain != "";
   assert secrets.webserverDomain != "";
 
 {
@@ -133,8 +137,8 @@ in
   services.miniflux = {
     enable = true;
     adminCredentialsFile = builtins.toFile "miniflux-admin-credentials" ''
-      ADMIN_USERNAME=${secrets.minifluxInitialAdminUsername}
-      ADMIN_PASSWORD=${secrets.minifluxInitialAdminPassword}
+      ADMIN_USERNAME="${adminUsername}"
+      ADMIN_PASSWORD="${adminPassword}"
     '';
     config = {
       WORKER_POOL_SIZE = "5"; # number of background workers
@@ -190,11 +194,30 @@ in
   };
   # }}}
 
+  # nextcloud {{{
+  services.nextcloud = {
+    enable = true;
+    package = pkgs.nextcloud24;
+    hostName = secrets.nextcloudDomain;
+    config = {
+      adminuser = adminUsername;
+      adminpassFile = "${pkgs.writeText "adminpass" "${adminPassword}"}";
+    };
+    https = true;
+    maxUploadSize = "1G";
+    enableImagemagick = false; # see https://github.com/nextcloud/server/issues/13099
+  };
+  # }}}
+
   # nginx (webserver and reverse proxies) {{{
   security.acme.acceptTerms = true;
   security.acme.defaults.email = secrets.email;
   services.nginx = {
     enable = true;
+    recommendedGzipSettings = true;
+    recommendedOptimisation = true;
+    recommendedTlsSettings = true;
+    recommendedProxySettings = true;
     virtualHosts = {
       "${secrets.webserverDomain}" = {
         forceSSL = true;
@@ -215,6 +238,10 @@ in
         forceSSL = true;
         enableACME = true;
         locations."/".proxyPass = "http://localhost:${builtins.toString bitwardenPort}";
+      };
+      "${secrets.nextcloudDomain}" = {
+        forceSSL = true;
+        enableACME = true;
       };
     };
   };

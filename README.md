@@ -58,12 +58,11 @@ This configuration is designed for a remote data server, either run locally or r
       ethInterface = "enp1s0";
       email = "alice@doe.com"; # required for TLS certificates
       minifluxDomain = "news.example.com";
-      minifluxInitialAdminUsername = "admin";
-      minifluxInitialAdminPassword = "test1234";
       feedmeDomain = "feedme.example.com";
       bitwardenDomain = "vault.example.com";
       # bitwardenYubicoClientId = "12345";
       # bitwardenYubicoSecretKey = "ABCDEABCDEABCDEABCDE=";
+      nextcloudDomain = "drive.example.com";
       webserverDomain = "example.com";
       isFirstRun = true;
     }
