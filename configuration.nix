@@ -6,14 +6,12 @@ let
   isFirstRun = if secrets ? isFirstRun then secrets.isFirstRun else false;
   gitHome = /home/git;
   vaultHome = /home/vault;
-  feedmePort = 8002;
   bitwardenPort = 8003;
   # initial values
   adminUsername = "admin";
   adminPassword = "test1234";
 
 in
-assert secrets.feedmeDomain != "";
 assert secrets.bitwardenDomain != "";
 assert secrets.nextcloudDomain != "";
 assert secrets.webserverDomain != "";
@@ -21,7 +19,6 @@ assert secrets.webserverDomain != "";
 {
   imports = [
     ./hardware-configuration.nix
-    ./modules/feedme.nix
   ];
 
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
@@ -122,14 +119,6 @@ assert secrets.webserverDomain != "";
     ];
   };
 
-  # feedme {{{
-  services.feedme = {
-    enable = true;
-    domainName = "0.0.0.0";
-    port = feedmePort;
-  };
-  # }}}
-
   # git server {{{
   programs.git = {
     enable = true;
@@ -202,10 +191,10 @@ assert secrets.webserverDomain != "";
         enableACME = true;
         locations."/".proxyPass = "http://localhost:8001";
       };
-      "${secrets.feedmeDomain}" = {
+      "feedme.bossley.us" = {
         forceSSL = true;
         enableACME = true;
-        locations."/".proxyPass = "http://localhost:${builtins.toString feedmePort}";
+        locations."/".proxyPass = "http://localhost:8002";
       };
       "${secrets.bitwardenDomain}" = {
         forceSSL = true;

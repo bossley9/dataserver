@@ -1,6 +1,10 @@
 { config, pkgs, ... }:
 
 {
+  imports = [
+    ../modules/feedme.nix
+  ];
+
   services.miniflux = {
     enable = true;
     adminCredentialsFile = builtins.toFile "miniflux-initial-credentials" ''
@@ -14,5 +18,11 @@
       CLEANUP_ARCHIVE_READ_DAYS = "60"; # read items are removed after x days
       LISTEN_ADDR = "0.0.0.0:8001"; # address to listen on, 0.0.0.0 works better than localhost
     };
+  };
+
+  services.feedme = {
+    enable = true;
+    domainName = "0.0.0.0";
+    port = 8002;
   };
 }

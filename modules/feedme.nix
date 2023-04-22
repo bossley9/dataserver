@@ -1,5 +1,5 @@
 { config, pkgs, lib, ... }:
-with lib;
+
 let
   cfg = config.services.feedme;
 
@@ -31,37 +31,37 @@ let
   };
 in
 {
-  imports = [];
+  imports = [ ];
 
   options.services.feedme = {
-    enable = mkEnableOption "the feedme service";
-    domainName = mkOption {
-      type = types.str;
+    enable = lib.mkEnableOption "the feedme service";
+    domainName = lib.mkOption {
+      type = lib.types.str;
       default = "localhost";
       example = "example.com";
       description = "The server domain name.";
     };
-    port = mkOption {
-      type = types.port;
+    port = lib.mkOption {
+      type = lib.types.port;
       default = 9000;
       example = 8080;
       description = "The server port.";
     };
-    certFile = mkOption {
-      type = types.nullOr types.path;
+    certFile = lib.mkOption {
+      type = lib.types.nullOr lib.types.path;
       default = null;
       example = "/etc/ssl/example.com.fullchain.pem";
       description = "The path to a TLS cert file.";
     };
-    keyFile = mkOption {
-      type = types.nullOr types.path;
+    keyFile = lib.mkOption {
+      type = lib.types.nullOr lib.types.path;
       default = null;
       example = "/etc/ssl/example.com.key";
       description = "The path to a TLS key file.";
     };
   };
 
-  config = mkIf cfg.enable {
+  config = lib.mkIf cfg.enable {
     systemd.services.feedme = {
       enable = true;
       wantedBy = [ "multi-user.target" ];
