@@ -19,14 +19,14 @@ let
   adminPassword = "test1234";
 
 in
-  assert secrets.hostname != "";
-  assert secrets.ethInterface != "";
-  assert secrets.email != "";
-  assert secrets.minifluxDomain != "";
-  assert secrets.feedmeDomain != "";
-  assert secrets.bitwardenDomain != "";
-  assert secrets.nextcloudDomain != "";
-  assert secrets.webserverDomain != "";
+assert secrets.hostname != "";
+assert secrets.ethInterface != "";
+assert secrets.email != "";
+assert secrets.minifluxDomain != "";
+assert secrets.feedmeDomain != "";
+assert secrets.bitwardenDomain != "";
+assert secrets.nextcloudDomain != "";
+assert secrets.webserverDomain != "";
 
 {
   imports = [
@@ -69,9 +69,10 @@ in
     openssh.authorizedKeys.keys = lib.strings.splitString "\n" (builtins.readFile ./keys.pub);
   };
 
-  environment.defaultPackages = lib.mkForce []; # Remove default packages for security
+  environment.defaultPackages = lib.mkForce [ ]; # Remove default packages for security
   environment.systemPackages = with pkgs; [
-    vim git
+    vim
+    git
   ];
 
   environment.shellInit = ''
@@ -106,7 +107,8 @@ in
     enable = true;
     allowedTCPPorts = [
       22 # OpenSSH (automatically allowed but explicitly adding for sanity)
-      80 443 # HTTP and HTTPS
+      80 # HTTP
+      443 # HTTPS
     ];
     # allowedUDPPorts = [ ... ];
   };
@@ -119,8 +121,7 @@ in
     dates = "weekly";
   };
   # Reduce systemd journaling
-  services.journald.extraConfig =
-  ''
+  services.journald.extraConfig = ''
     SystemMaxUse=250M
     MaxRetentionSec=7day
   '';

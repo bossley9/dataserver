@@ -1,21 +1,19 @@
 # dataserver
 
-A NixOS configuration for a data server
+A NixOS configuration for my data server
 
 ## About
 
-This configuration is designed for a remote data server, either run locally or remotely on a VPS.
+This configuration is designed for a remote data VPS on Vultr.
 
-## Setup (Vultr)
+## Installation
 
 1. Go to [https://channels.nixos.org](https://channels.nixos.org) to find the latest stable minimal x86_64 ISO url.
-2. Deploy a server in Vultr using the custom ISO link from earlier. I chose a plan with 1 GB RAM.
+2. Deploy a server in Vultr using the custom ISO link from earlier. I chose a Cloud Compute plan with AMD High Performance, 1 vCPU and 1 GB RAM, and auto backups disabled.
 3. Log into the web console and copy over ssh keys to perform the rest of the installation via ssh.
     ```sh
     mkdir ~/.ssh
-    # for Github keys
-    curl -L https://github.com/YOUR_USERNAME.keys > ~/.ssh/authorized_keys
-    # for Sourcehut keys
+    # for Sourcehut SSH keys
     curl -L https://meta.sr.ht/~YOUR_USERNAME.keys > ~/.ssh/authorized_keys
     ```
     The following steps can now be performed via SSH (`ssh nixos@MY_IP_ADDRESS`).
@@ -27,8 +25,8 @@ This configuration is designed for a remote data server, either run locally or r
 5. Partition the disk, where the swap is the same size as allocated RAM. MBR partitioning is required or the VPS may not recognize any bootable partitions.
     ```sh
     parted /dev/vda -- mklabel msdos
-    parted /dev/vda -- mkpart primary 1MB -1GB
-    parted /dev/vda -- mkpart primary linux-swap -1GB 100%
+    parted /dev/vda -- mkpart primary 1MB -2GB
+    parted /dev/vda -- mkpart primary linux-swap -2GB 100%
     ```
 6. Format each partition. I recommend ext4 over btrfs because a VPS generally doesn't need CoW or snapshot features, and ext4 is slightly faster and uses less storage.
     ```sh
@@ -37,7 +35,7 @@ This configuration is designed for a remote data server, either run locally or r
     swapon /dev/vda2
     mount /dev/disk/by-label/root /mnt
     ```
-7. Generate a configuration derived from hardware.
+7. Generate a configuration derived from hardware if you're starting from scratch without this repository.
     ```sh
     nixos-generate-config --root /mnt
     ```
@@ -75,4 +73,4 @@ This configuration is designed for a remote data server, either run locally or r
     ```sh
     nixos-install --no-root-passwd
     ```
-12. In the Vultr dashboard, remove the custom ISO. This will trigger a VPS reboot. Then verify you can access the server as `nixos@domain` or `nixos@ip` via SSH.
+12. In the Vultr dashboard, remove the custom ISO. This will trigger a VPS reboot. Then verify you can access the server as `nixos@ip` via SSH.
