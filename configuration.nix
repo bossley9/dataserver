@@ -2,17 +2,16 @@
 
 let
   email = "bossley.samuel@gmail.com";
-  secrets = import ./secrets.nix;
-  adminUsername = "admin";
-  adminPassword = "test1234";
 in
-assert secrets.nextcloudDomain != "";
 {
   imports = [
     ./hardware-configuration.nix
   ];
 
-  nix.settings.experimental-features = [ "nix-command" "flakes" ];
+  nix.settings = {
+    experimental-features = [ "nix-command" "flakes" ];
+    allowed-users = [ "@wheel" ];
+  };
 
   boot.loader = {
     grub = {
@@ -68,7 +67,6 @@ assert secrets.nextcloudDomain != "";
     };
     lockKernelModules = true; # Disable loading kernel modules after boot
   };
-  nix.allowedUsers = [ "@wheel" ];
 
   services.openssh = {
     enable = true;
@@ -109,22 +107,6 @@ assert secrets.nextcloudDomain != "";
       443 # HTTPS
     ];
   };
-
-  # nextcloud {{{
-  services.nextcloud = {
-    enable = true;
-    package = pkgs.nextcloud24;
-    hostName = secrets.nextcloudDomain;
-    config = {
-      adminuser = adminUsername;
-      adminpassFile = "${pkgs.writeText "adminpass" "${adminPassword}"}";
-    };
-    https = true;
-    maxUploadSize = "1G";
-    enableImagemagick = false; # see https://github.com/nextcloud/server/issues/13099
-  };
-  # }}}
-
   security.acme = {
     acceptTerms = true;
     defaults.email = email;
@@ -151,7 +133,7 @@ assert secrets.nextcloudDomain != "";
         enableACME = true;
         locations."/".proxyPass = "http://localhost:8003";
       };
-      "${secrets.nextcloudDomain}" = {
+      "drive.bossley.us" = {
         forceSSL = true;
         enableACME = true;
       };
@@ -160,4 +142,3 @@ assert secrets.nextcloudDomain != "";
 
   system.stateVersion = "22.11"; # required
 }
-
