@@ -27,6 +27,8 @@ assert secrets.webserverDomain != "";
     ./modules/feedme.nix
   ];
 
+  nix.settings.experimental-features = [ "nix-command" "flakes" ];
+
   boot.loader = {
     grub = {
       enable = true;
@@ -85,10 +87,11 @@ assert secrets.webserverDomain != "";
 
   services.openssh = {
     enable = true;
-    permitRootLogin = "no";
-    passwordAuthentication = false;
     allowSFTP = false;
-    forwardX11 = false;
+    settings = {
+      PasswordAuthentication = false;
+      PermitRootLogin = "no";
+    };
     extraConfig = ''
       AuthenticationMethods publickey
     '';
