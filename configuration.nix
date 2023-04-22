@@ -3,14 +3,10 @@
 let
   email = "bossley.samuel@gmail.com";
   secrets = import ./secrets.nix;
-  gitHome = /home/git;
-  # initial values
   adminUsername = "admin";
   adminPassword = "test1234";
-
 in
 assert secrets.nextcloudDomain != "";
-
 {
   imports = [
     ./hardware-configuration.nix
@@ -114,20 +110,6 @@ assert secrets.nextcloudDomain != "";
     ];
   };
 
-  # git server {{{
-  programs.git = {
-    enable = true;
-    config.init.defaultBranch = "main";
-  };
-  users.users.git = {
-    isNormalUser = true;
-    description = "git user";
-    createHome = true;
-    home = (builtins.toString gitHome);
-    openssh.authorizedKeys.keys = lib.strings.splitString "\n" (builtins.readFile ./keys.pub);
-  };
-  # }}}
-
   # nextcloud {{{
   services.nextcloud = {
     enable = true;
@@ -163,6 +145,11 @@ assert secrets.nextcloudDomain != "";
         forceSSL = true;
         enableACME = true;
         locations."/".proxyPass = "http://localhost:8002";
+      };
+      "git.bossley.us" = {
+        forceSSL = true;
+        enableACME = true;
+        locations."/".proxyPass = "http://localhost:8003";
       };
       "${secrets.nextcloudDomain}" = {
         forceSSL = true;

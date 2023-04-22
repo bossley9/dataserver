@@ -12,6 +12,7 @@
         modules = [
           ./configuration.nix
           ./services/miniflux.nix
+          ./services/gitea.nix
         ];
       };
     };
