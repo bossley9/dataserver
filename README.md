@@ -16,7 +16,7 @@ This configuration is designed for a remote data VPS on Vultr.
     # for Sourcehut SSH keys
     curl -L https://meta.sr.ht/~YOUR_USERNAME.keys > ~/.ssh/authorized_keys
     ```
-    The following steps can now be performed via SSH (`ssh nixos@MY_IP_ADDRESS`).
+    The following steps can now be performed via SSH (`ssh nixos@ip`).
 4. Log into root and set up packages.
     ```sh
     sudo -i
@@ -48,25 +48,12 @@ This configuration is designed for a remote data VPS on Vultr.
     rm -r /mnt/etc/nixos
     mv nixos /mnt/etc/
     ```
-9. Create a `secrets.nix` file for server-specific details. Make sure the domains do not include protocols. On the first run, you will need to add the property `isFirstRun = true` to allow access to vault creation. **Once you have created a Bitwarden vault and all necessary other account initialization, you should remove this to disallow new vault creation.**
-    ```nix
-    # (inside /mnt/etc/nixos/secrets.nix)
-    {
-      feedmeDomain = "feedme.example.com";
-      bitwardenDomain = "vault.example.com";
-      # bitwardenYubicoClientId = "12345";
-      # bitwardenYubicoSecretKey = "ABCDEABCDEABCDEABCDE=";
-      nextcloudDomain = "drive.example.com";
-      webserverDomain = "example.com";
-      isFirstRun = true;
-    }
-    ```
-10. Copy SSH public keys for server access. If you do not do this, you will be locked out of the server.
+9. Copy SSH public keys for server access. If you do not do this, you will be locked out of the server.
     ```sh
     cp /home/nixos/.ssh/authorized_keys /mnt/etc/nixos/keys.pub
     ```
-11. Install the operating system.
+10. Install the operating system.
     ```sh
     nixos-install --no-root-passwd
     ```
-12. In the Vultr dashboard, remove the custom ISO. This will trigger a VPS reboot. Then verify you can access the server as `nixos@ip` via SSH.
+11. In the Vultr dashboard, remove the custom ISO. This will trigger a VPS reboot. Then verify you can access the server via SSH (`ssh nixos@ip`).
