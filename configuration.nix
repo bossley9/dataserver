@@ -14,8 +14,6 @@ let
   adminPassword = "test1234";
 
 in
-assert secrets.hostname != "";
-assert secrets.ethInterface != "";
 assert secrets.email != "";
 assert secrets.minifluxDomain != "";
 assert secrets.feedmeDomain != "";
@@ -39,9 +37,9 @@ assert secrets.webserverDomain != "";
   };
 
   networking = {
-    hostName = secrets.hostname;
+    hostName = "dataserver";
     useDHCP = false; # False recommended for security
-    interfaces.${secrets.ethInterface}.useDHCP = true;
+    interfaces.ens3.useDHCP = true;
   };
 
   services.timesyncd.enable = true;
