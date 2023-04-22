@@ -58,15 +58,17 @@ assert secrets.webserverDomain != "";
     home = (builtins.toString userHome);
     openssh.authorizedKeys.keys = lib.strings.splitString "\n" (builtins.readFile ./keys.pub);
   };
-
   environment.defaultPackages = lib.mkForce [ ]; # Remove default packages for security
   environment.systemPackages = with pkgs; [
     vim
     git
   ];
-
   environment.shellInit = ''
     umask 0077
+  '';
+  programs.bash.shellInit = ''
+    set -o vi
+    alias vim="nvim"
   '';
 
   security = {
