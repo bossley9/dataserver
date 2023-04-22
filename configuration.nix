@@ -1,11 +1,11 @@
 { config, pkgs, lib, ... }:
 
 let
+  email = "bossley.samuel@gmail.com";
   secrets = import ./secrets.nix;
   isFirstRun = if secrets ? isFirstRun then secrets.isFirstRun else false;
   gitHome = /home/git;
   vaultHome = /home/vault;
-  minifluxPort = 8001;
   feedmePort = 8002;
   bitwardenPort = 8003;
   # initial values
@@ -13,8 +13,6 @@ let
   adminPassword = "test1234";
 
 in
-assert secrets.email != "";
-assert secrets.minifluxDomain != "";
 assert secrets.feedmeDomain != "";
 assert secrets.bitwardenDomain != "";
 assert secrets.nextcloudDomain != "";
@@ -97,15 +95,6 @@ assert secrets.webserverDomain != "";
   };
   services.sshguard.enable = true;
 
-  networking.firewall = {
-    enable = true;
-    allowedTCPPorts = [
-      22 # OpenSSH (automatically allowed but explicitly adding for sanity)
-      80 # HTTP
-      443 # HTTPS
-    ];
-  };
-
   # Automatically garbage collect nix
   nix.gc = {
     automatic = true;
@@ -124,22 +113,14 @@ assert secrets.webserverDomain != "";
     ];
   };
 
-  # miniflux {{{
-  services.miniflux = {
+  networking.firewall = {
     enable = true;
-    adminCredentialsFile = builtins.toFile "miniflux-admin-credentials" ''
-      ADMIN_USERNAME="${adminUsername}"
-      ADMIN_PASSWORD="${adminPassword}"
-    '';
-    config = {
-      WORKER_POOL_SIZE = "5"; # number of background workers
-      POLLING_FREQUENCY = "60"; # feed refresh interval in minutes
-      BATCH_SIZE = "100"; # number of feeds sent to queue each interval
-      LISTEN_ADDR = "0.0.0.0:${builtins.toString minifluxPort}"; # address to listen on, 0.0.0.0 works better than localhost
-      CLEANUP_ARCHIVE_READ_DAYS = "60"; # read items are removed after x days
-    };
+    allowedTCPPorts = [
+      22 # OpenSSH (automatically allowed but explicitly adding for sanity)
+      80 # HTTP
+      443 # HTTPS
+    ];
   };
-  # }}}
 
   # feedme {{{
   services.feedme = {
@@ -200,9 +181,10 @@ assert secrets.webserverDomain != "";
   };
   # }}}
 
-  # nginx (webserver and reverse proxies) {{{
-  security.acme.acceptTerms = true;
-  security.acme.defaults.email = secrets.email;
+  security.acme = {
+    acceptTerms = true;
+    defaults.email = email;
+  };
   services.nginx = {
     enable = true;
     recommendedGzipSettings = true;
@@ -215,10 +197,10 @@ assert secrets.webserverDomain != "";
         enableACME = true;
         root = "/var/www/${secrets.webserverDomain}";
       };
-      "${secrets.minifluxDomain}" = {
+      "news.bossley.us" = {
         forceSSL = true;
         enableACME = true;
-        locations."/".proxyPass = "http://localhost:${builtins.toString minifluxPort}";
+        locations."/".proxyPass = "http://localhost:8001";
       };
       "${secrets.feedmeDomain}" = {
         forceSSL = true;
@@ -236,7 +218,6 @@ assert secrets.webserverDomain != "";
       };
     };
   };
-  # }}}
 
   system.stateVersion = "22.11"; # required
 }

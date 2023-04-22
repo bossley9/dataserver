@@ -52,8 +52,6 @@ This configuration is designed for a remote data VPS on Vultr.
     ```nix
     # (inside /mnt/etc/nixos/secrets.nix)
     {
-      email = "alice@doe.com"; # required for TLS certificates
-      minifluxDomain = "news.example.com";
       feedmeDomain = "feedme.example.com";
       bitwardenDomain = "vault.example.com";
       # bitwardenYubicoClientId = "12345";
