@@ -3,7 +3,6 @@
 let
   secrets = import ./secrets.nix;
   isFirstRun = if secrets ? isFirstRun then secrets.isFirstRun else false;
-  userHome = /home/nixos;
   gitHome = /home/git;
   vaultHome = /home/vault;
   minifluxPort = 8001;
@@ -57,7 +56,6 @@ assert secrets.webserverDomain != "";
     isNormalUser = true;
     initialPassword = "test1234!";
     extraGroups = [ "wheel" ];
-    home = (builtins.toString userHome);
     openssh.authorizedKeys.keys = lib.strings.splitString "\n" (builtins.readFile ./keys.pub);
   };
   environment.defaultPackages = lib.mkForce [ ]; # Remove default packages for security
