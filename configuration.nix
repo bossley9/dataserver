@@ -3,18 +3,13 @@
 let
   email = "bossley.samuel@gmail.com";
   secrets = import ./secrets.nix;
-  isFirstRun = if secrets ? isFirstRun then secrets.isFirstRun else false;
   gitHome = /home/git;
-  vaultHome = /home/vault;
-  bitwardenPort = 8003;
   # initial values
   adminUsername = "admin";
   adminPassword = "test1234";
 
 in
-assert secrets.bitwardenDomain != "";
 assert secrets.nextcloudDomain != "";
-assert secrets.webserverDomain != "";
 
 {
   imports = [
@@ -133,28 +128,6 @@ assert secrets.webserverDomain != "";
   };
   # }}}
 
-  # bitwarden (vaultwarden) {{{
-  users.users.vaultwarden = {
-    isSystemUser = true;
-    description = "Bitwarden vault user";
-    createHome = true;
-    home = (builtins.toString vaultHome);
-  };
-  services.vaultwarden = {
-    enable = true;
-    backupDir = (builtins.toString vaultHome) + "/vault-backup";
-    config = {
-      YUBICO_CLIENT_ID = if secrets ? bitwardenYubicoClientId then secrets.bitwardenYubicoClientId else "";
-      YUBICO_SECRET_KEY = if secrets ? bitwardenYubicoSecretKey then secrets.bitwardenYubicoSecretKey else "";
-      DOMAIN = "https://" + secrets.bitwardenDomain;
-      SIGNUPS_ALLOWED = isFirstRun;
-      INVITATIONS_ALLOWED = false;
-      ROCKET_ADDRESS = "0.0.0.0";
-      ROCKET_PORT = bitwardenPort;
-    };
-  };
-  # }}}
-
   # nextcloud {{{
   services.nextcloud = {
     enable = true;
@@ -181,11 +154,6 @@ assert secrets.webserverDomain != "";
     recommendedTlsSettings = true;
     recommendedProxySettings = true;
     virtualHosts = {
-      "${secrets.webserverDomain}" = {
-        forceSSL = true;
-        enableACME = true;
-        root = "/var/www/${secrets.webserverDomain}";
-      };
       "news.bossley.us" = {
         forceSSL = true;
         enableACME = true;
@@ -195,11 +163,6 @@ assert secrets.webserverDomain != "";
         forceSSL = true;
         enableACME = true;
         locations."/".proxyPass = "http://localhost:8002";
-      };
-      "${secrets.bitwardenDomain}" = {
-        forceSSL = true;
-        enableACME = true;
-        locations."/".proxyPass = "http://localhost:${builtins.toString bitwardenPort}";
       };
       "${secrets.nextcloudDomain}" = {
         forceSSL = true;
