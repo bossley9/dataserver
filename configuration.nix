@@ -1,8 +1,3 @@
-# See configuration.nix(5) for more information.
-# NOTE: be sure to disable virtualization capabilities within a VPS
-# via "virtualisation.hypervGuest.enable" in the hardware configuration
-# vim: fdm=marker
-
 { config, pkgs, lib, ... }:
 
 let
@@ -34,22 +29,21 @@ assert secrets.webserverDomain != "";
     ./modules/feedme.nix
   ];
 
-  # boot {{{
-  boot.loader.grub = {
-    enable = true;
-    version = 2;
-    device = "/dev/vda";
+  boot.loader = {
+    grub = {
+      enable = true;
+      version = 2;
+      device = "/dev/vda";
+    };
+    timeout = 2;
   };
-  boot.loader.timeout = 2;
-  # }}}
 
-  # networking {{{
-  networking.useDHCP = false; # False recommended for security
-  networking.interfaces.${secrets.ethInterface}.useDHCP = true;
-  networking.hostName = secrets.hostname;
-  # }}}
+  networking = {
+    hostName = secrets.hostname;
+    useDHCP = false; # False recommended for security
+    interfaces.${secrets.ethInterface}.useDHCP = true;
+  };
 
-  # localization {{{
   services.timesyncd.enable = true;
   time.timeZone = "America/Los_Angeles";
   i18n.defaultLocale = "en_US.UTF-8";
@@ -57,9 +51,7 @@ assert secrets.webserverDomain != "";
     font = "Lat2-Terminus16";
     keyMap = "us";
   };
-  # }}}
 
-  # user space {{{
   users.mutableUsers = false;
   users.users.nixos = {
     isNormalUser = true;
@@ -78,18 +70,18 @@ assert secrets.webserverDomain != "";
   environment.shellInit = ''
     umask 0077
   '';
-  # }}}
 
-  # security and access {{{
-  security.sudo.enable = false;
-  security.doas = {
-    enable = true;
-    extraRules = [
-      { groups = [ "wheel" ]; noPass = true; keepEnv = true; }
-    ];
+  security = {
+    sudo.enable = false;
+    doas = {
+      enable = true;
+      extraRules = [
+        { groups = [ "wheel" ]; noPass = true; keepEnv = true; }
+      ];
+    };
+    lockKernelModules = true; # Disable loading kernel modules after boot
   };
   nix.allowedUsers = [ "@wheel" ];
-  security.lockKernelModules = true; # Disable loading kernel modules after boot
 
   services.openssh = {
     enable = true;
@@ -110,11 +102,8 @@ assert secrets.webserverDomain != "";
       80 # HTTP
       443 # HTTPS
     ];
-    # allowedUDPPorts = [ ... ];
   };
-  # }}}
 
-  # optimization {{{
   # Automatically garbage collect nix
   nix.gc = {
     automatic = true;
@@ -132,7 +121,6 @@ assert secrets.webserverDomain != "";
       "0 3 * * 0 root reboot"
     ];
   };
-  # }}}
 
   # miniflux {{{
   services.miniflux = {
@@ -248,19 +236,6 @@ assert secrets.webserverDomain != "";
   };
   # }}}
 
-  # required {{{
-  # Copy the NixOS configuration file and link it from the resulting system
-  # (/run/current-system/configuration.nix). This is useful in case you
-  # accidentally delete configuration.nix.
-  # system.copySystemConfiguration = true;
-
-  # This value determines the NixOS release from which the default
-  # settings for stateful data, like file locations and database versions
-  # on your system were taken. It‘s perfectly fine and recommended to leave
-  # this value at the release version of the first install of this system.
-  # Before changing this value read the documentation for this option
-  # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
-  system.stateVersion = "22.05"; # Did you read the comment?
-  # }}}
+  system.stateVersion = "22.11"; # required
 }
 
