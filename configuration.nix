@@ -69,6 +69,7 @@ assert secrets.webserverDomain != "";
   programs.bash.shellInit = ''
     set -o vi
     alias vim="nvim"
+    alias nrs="doas nixos-rebuild switch --flake .#"
   '';
 
   security = {
