@@ -30,10 +30,10 @@ This configuration is designed for a remote data VPS on Vultr.
     ```
 6. Format each partition. I recommend ext4 over btrfs because a VPS generally doesn't need CoW or snapshot features, and ext4 is slightly faster and uses less storage.
     ```sh
-    mkfs.ext4 -L root /dev/vda1
+    mkfs.ext4 -L main /dev/vda1
     mkswap -L swap /dev/vda2
     swapon /dev/vda2
-    mount /dev/disk/by-label/root /mnt
+    mount /dev/disk/by-label/main /mnt
     ```
 7. Generate a configuration derived from hardware if you're starting from scratch without this repository.
     ```sh
@@ -54,6 +54,6 @@ This configuration is designed for a remote data VPS on Vultr.
     ```
 10. Install the operating system.
     ```sh
-    nixos-install --no-root-passwd
+    nixos-install --no-root-passwd --flake .#dataserver
     ```
 11. In the Vultr dashboard, remove the custom ISO. This will trigger a VPS reboot. Then verify you can access the server via SSH (`ssh nixos@ip`).

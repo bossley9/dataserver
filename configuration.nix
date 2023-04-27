@@ -45,7 +45,7 @@ in
   };
   environment.defaultPackages = lib.mkForce [ ]; # Remove default packages for security
   environment.systemPackages = with pkgs; [
-    vim
+    neovim
     git
   ];
   environment.shellInit = ''
