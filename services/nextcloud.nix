@@ -8,6 +8,7 @@
     config = {
       adminuser = "admin";
       adminpassFile = "${pkgs.writeText "nextcloud-initial-credentials" "test1234!"}";
+      defaultPhoneRegion = "US";
     };
     https = true;
     maxUploadSize = "2G";
