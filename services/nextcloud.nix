@@ -14,6 +14,15 @@
       dbtype = "pgsql";
       dbuser = "nextcloud";
     };
+    phpOptions = {
+      "opcache.enable" = "1";
+      "opcache.enable_cli" = "1";
+      "opcache.interned_strings_buffer" = "8";
+      "opcache.max_accelerated_files" = "10000";
+      "opcache.revalidate_freq" = "1";
+      "opcache.save_comments" = "1";
+      "opcache.memory_consumption" = "512";
+    };
     https = true;
     maxUploadSize = "2G";
     enableImagemagick = false; # see https://github.com/nextcloud/server/issues/13099
