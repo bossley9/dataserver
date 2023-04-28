@@ -22,9 +22,11 @@
       "opcache.revalidate_freq" = "1";
       "opcache.save_comments" = "1";
       "opcache.memory_consumption" = "512";
+      "opcache.jit" = "1255";
+      "opcache.jit_buffer_size" = "128M";
     };
     https = true;
-    maxUploadSize = "2G";
+    maxUploadSize = "4G";
     enableImagemagick = false; # see https://github.com/nextcloud/server/issues/13099
   };
   # ensure Postgres DB setup happens before Nextcloud
