@@ -5,13 +5,13 @@ let
 
   feedme = with pkgs; buildGoModule rec {
     pname = "feedme";
-    version = "0.3.1";
+    version = "0.3.2";
 
     src = fetchFromSourcehut {
       owner = "~bossley9";
       repo = "${pname}";
       rev = "v${version}";
-      sha256 = "19x8rc4pkbfxj10algaa87grqr9gqc3dv1kchh18v9cp5znja6n4";
+      sha256 = "1p61zzldfqdhwmlnxhjkk17md3b7c4z0jhk369c2s9pqklvk0qbf";
     };
 
     vendorSha256 = "sha256-Gc1vlnYLy5Xrd9QQZERa7pjG7PhhEKWd+EWTbD43Qis=";
