@@ -5,20 +5,20 @@ let
 
   feedme = with pkgs; buildGoModule rec {
     pname = "feedme";
-    version = "0.3.2";
+    version = "0.4.0";
 
-    src = fetchFromSourcehut {
-      owner = "~bossley9";
+    src = fetchFromGitHub {
+      owner = "bossley9";
       repo = "${pname}";
       rev = "v${version}";
-      sha256 = "1p61zzldfqdhwmlnxhjkk17md3b7c4z0jhk369c2s9pqklvk0qbf";
+      sha256 = "03mspgxnyim1p7yz5q1pwpnybrzm16xgf3jxqzvnzq2hmcam0f5b";
     };
 
-    vendorSha256 = "sha256-Gc1vlnYLy5Xrd9QQZERa7pjG7PhhEKWd+EWTbD43Qis=";
+    vendorSha256 = "sha256-OmGzqndx1cMhovode9w9XJ7BOJmjz+9ntYMRL5MEVm0=";
 
     meta = with lib; {
       description = "An Atom feed generator";
-      homepage = "https://git.sr.ht/~bossley9/feedme";
+      homepage = "https://github.com/bossley9/feedme";
       maintainers = with maintainers; [ bossley9 ];
       license = licenses.bsd2;
     };

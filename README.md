@@ -13,8 +13,7 @@ This configuration is designed for a remote data VPS on Vultr.
 3. Log into the web console and copy over ssh keys to perform the rest of the installation via ssh.
     ```sh
     mkdir ~/.ssh
-    # for Sourcehut SSH keys
-    curl -L https://meta.sr.ht/~YOUR_USERNAME.keys > ~/.ssh/authorized_keys
+    curl -L https://github.com/YOUR_USERNAME.keys > ~/.ssh/authorized_keys
     ```
     The following steps can now be performed via SSH (`ssh nixos@ip`).
 4. Log into root and set up packages.
@@ -39,16 +38,8 @@ This configuration is designed for a remote data VPS on Vultr.
     ```sh
     nixos-generate-config --root /mnt
     ```
-8. Clone this configuration and move files into the appropriate locations.
-    ```sh
-    git clone https://git.sr.ht/~bossley9/dataserver nixos
-    mv /mnt/etc/nixos/hardware-configuration.nix nixos/
-    # NOTE: be sure to disable virtualization capabilities within a VPS
-    # via "virtualisation.hypervGuest.enable" in the hardware configuration
-    rm -r /mnt/etc/nixos
-    mv nixos /mnt/etc/
-    ```
-9. Copy SSH public keys for server access. If you do not do this, you will be locked out of the server.
+8. Clone this configuration and move files into the appropriate locations. Be sure to double check the hardware configuration for descrepancies.
+9. Copy SSH public keys for server access. **If you do not do this, you will be locked out of the server.**
     ```sh
     cp /home/nixos/.ssh/authorized_keys /mnt/etc/nixos/keys.pub
     ```
