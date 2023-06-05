@@ -14,6 +14,7 @@
       dbtype = "pgsql";
       dbuser = "nextcloud";
     };
+    configureRedis = true;
     phpOptions = {
       "opcache.enable" = "1";
       "opcache.enable_cli" = "1";
