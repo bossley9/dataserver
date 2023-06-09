@@ -1,13 +1,23 @@
 # Send-only postfix mail server for password reset and notification emails, mostly.
 # First, set up DNS records:
-# TXT xxx.xx.xxx.xx v=spf1 ip4:xxx.xx.xxx.xx ip6:xxxx:xxxx:xxxx:xxxx:xxxx:xxxx:xxxx:xxxx ~all
+# TXT subdomain "v=spf1 ip4:xxx.xx.xxx.xx ip6:xxxx:xxxx:xxxx:xxxx:xxxx:xxxx:xxxx:xxxx ~all"
+# TXT _dmarc.subdomain "v=DMARC1; p=reject; pct=100"
 #
 # To test mail delivery with sendmail:
 # printf "Subject: Hello World\nThis is a test email." | sendmail your@email.com
 
 { config, pkgs, ... }:
 
+let
+  mailDomain = "mail.bossley.us";
+in
+
 {
+  users.users.noreply = {
+    isSystemUser = true;
+    group = "noreply";
+  };
+  users.groups.noreply = { };
   services.postfix = {
     enable = true;
     extraMasterConf = ''
@@ -17,8 +27,8 @@
       maillog_file = "/var/log/postfix.log";
       maillog_file_permissions = "0644";
       inet_interfaces = "loopback-only";
-      myhostname = "mail.bossley.us";
-      mydomain = "mail.bossley.us";
+      myhostname = mailDomain;
+      mydomain = mailDomain;
       mydestination = "localhost.$mydomain, localhost, $myhostname";
     };
   };
