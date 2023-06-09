@@ -48,3 +48,4 @@ This configuration is designed for a remote data VPS on Vultr.
     nixos-install --no-root-passwd --flake .#dataserver
     ```
 11. In the Vultr dashboard, remove the custom ISO. This will trigger a VPS reboot. Then verify you can access the server via SSH (`ssh nixos@ip`).
+12. Make sure to port 25 is unblocked on the VPS or server you are using. For example, Vultr blocks port 25 on all instances by default and will only unblock the port after submitting support request.

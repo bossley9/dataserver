@@ -104,6 +104,7 @@ in
       22 # OpenSSH (automatically allowed but explicitly adding for sanity)
       80 # HTTP
       443 # HTTPS
+      25 # SMTP
     ];
   };
   security.acme = {
