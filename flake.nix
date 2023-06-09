@@ -11,6 +11,7 @@
         system = "x86_64-linux";
         modules = [
           ./configuration.nix
+          ./services/mailserver.nix
           ./services/miniflux.nix
           ./services/gitea.nix
           ./services/nextcloud.nix

@@ -51,18 +51,4 @@
       }
     ];
   };
-  services.postfix = {
-    enable = true;
-    extraMasterConf = ''
-      postlog unix-dgram n - n - 1 postlogd
-    '';
-    config = {
-      maillog_file = "/var/log/postfix.log";
-      maillog_file_permissions = "0644";
-      inet_interfaces = "loopback-only";
-      myhostname = "mail.bossley.us";
-      mydomain = "mail.bossley.us";
-      mydestination = "localhost.$mydomain, localhost, $myhostname";
-    };
-  };
 }
