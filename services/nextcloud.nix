@@ -19,7 +19,7 @@
     phpOptions = {
       "opcache.enable" = "1";
       "opcache.enable_cli" = "1";
-      "opcache.interned_strings_buffer" = "8";
+      "opcache.interned_strings_buffer" = "10";
       "opcache.max_accelerated_files" = "10000";
       "opcache.revalidate_freq" = "1";
       "opcache.save_comments" = "1";
