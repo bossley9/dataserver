@@ -51,7 +51,7 @@ in
     umask 0077
   '';
   programs.bash.shellInit = ''
-    set -o vi
+    set -o vi > /dev/null 2>&1
     alias vim="nvim"
     alias nrs="doas nixos-rebuild switch --flake .#"
   '';
