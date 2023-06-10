@@ -3,8 +3,8 @@
 # TXT subdomain "v=spf1 ip4:xxx.xx.xxx.xx ip6:xxxx:xxxx:xxxx:xxxx:xxxx:xxxx:xxxx:xxxx ~all"
 # TXT _dmarc.subdomain "v=DMARC1; p=reject; pct=100"
 # MX subdomain 0 subdomain.domain.com
-# (inserted DNS record from /var/dkim/mail.txt)
-# TXT subdomain._domainkey "v=DKIM1; k=rea; ..."
+# (inserted DNS record from /var/dkim/default.txt)
+# TXT default._domainkey "v=DKIM1; k=rea; ..."
 #
 # To test mail delivery with sendmail:
 # printf "Subject: Hello World\nThis is a test email." | sendmail your@email.com
@@ -15,7 +15,7 @@ let
   mailDomain = "mail.bossley.us";
 
   dkimDir = "/var/dkim";
-  dkimSelector = "mail";
+  dkimSelector = "default";
   dkimKeyFile = "${dkimDir}/${dkimSelector}.private";
   dkimKeyTxt = "${dkimDir}/${dkimSelector}.txt";
   createDkimCert = domain:
