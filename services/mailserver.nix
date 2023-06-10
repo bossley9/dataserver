@@ -18,6 +18,7 @@ let
   dkimSelector = "default";
   dkimKeyFile = "${dkimDir}/${dkimSelector}.private";
   dkimKeyTxt = "${dkimDir}/${dkimSelector}.txt";
+  dkimSocket = "8891";
   createDkimCert = domain:
     ''
       if [ ! -f "${dkimKeyFile}" ]; then
@@ -52,6 +53,10 @@ in
       myhostname = mailDomain;
       mydomain = mailDomain;
       mydestination = "localhost.$mydomain, localhost, $myhostname";
+      milter_protocol = "2";
+      milter_default_action = "accept";
+      smtpd_milters = "inet:localhost:${dkimSocket}";
+      non_smtpd_milters = "inet:localhost:${dkimSocket}";
     };
   };
   services.opendkim = {
@@ -68,6 +73,7 @@ in
       UserID              opendkim
       Selector            ${dkimSelector}
       KeyFile             ${dkimKeyFile}
+      Socket              inet:${dkimSocket}@localhost
     '';
     group = "opendkim";
     selector = dkimSelector;

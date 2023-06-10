@@ -105,6 +105,7 @@ in
       80 # HTTP
       443 # HTTPS
       25 # SMTP
+      8891 # DKIM
     ];
   };
   security.acme = {
