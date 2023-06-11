@@ -7,7 +7,7 @@
 # TXT default._domainkey.subomain "v=DKIM1; k=rea; ..."
 #
 # To test mail delivery with sendmail:
-# printf "Subject: Hello World\nThis is a test email." | sendmail your@email.com
+# printf "Subject: First newsletter\nThis is our first official newsletter email." | sendmail your@email.com
 
 { config, lib, pkgs, ... }:
 
@@ -31,6 +31,11 @@ let
         chmod 600 "${dkimKeyFile}"
       fi
     '';
+  dkimTrustedHosts = pkgs.writeText "trusted.hosts" ''
+    127.0.0.1
+    localhost
+    *.${mailDomain}
+  '';
 
 in
 
@@ -53,16 +58,18 @@ in
       myhostname = mailDomain;
       mydomain = mailDomain;
       mydestination = "localhost.$mydomain, localhost, $myhostname";
-      milter_protocol = "2";
+      smtpd_milters = "inet:127.0.0.1:${dkimSocket}";
+      non_smtpd_milters = "inet:127.0.0.1:${dkimSocket}";
       milter_default_action = "accept";
-      smtpd_milters = "inet:localhost:${dkimSocket}";
-      non_smtpd_milters = "inet:localhost:${dkimSocket}";
     };
   };
   services.opendkim = {
     enable = true;
     keyPath = dkimDir;
     domains = "csl:${mailDomain}";
+    group = "opendkim";
+    selector = dkimSelector;
+    socket = "inet:${dkimSocket}@127.0.0.1";
     configFile = pkgs.writeText "opendkim.conf" ''
       Canonicalization    relaxed/simple
       Mode                sv
@@ -70,13 +77,15 @@ in
       AutoRestartRate     5/1H
       SignatureAlgorithm  rsa-sha256
       UMask               002
-      UserID              opendkim
+      UserID              opendkim:opendkim
+      SoftwareHeader      yes
+      OversignHeaders     From
       Selector            ${dkimSelector}
       KeyFile             ${dkimKeyFile}
-      Socket              inet:${dkimSocket}@localhost
+      ExternalIgnoreList  ${dkimTrustedHosts}
+      InternalHosts       ${dkimTrustedHosts}
+      Socket              inet:${dkimSocket}@127.0.0.1
     '';
-    group = "opendkim";
-    selector = dkimSelector;
   };
   systemd.services.opendkim.preStart = lib.mkForce (createDkimCert mailDomain);
 }
