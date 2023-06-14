@@ -1,11 +1,6 @@
 # Send-only postfix mail server for password reset and notification emails, mostly.
-# First, set up DNS records:
-# TXT subdomain "v=spf1 ip4:xxx.xx.xxx.xx ip6:xxxx:xxxx:xxxx:xxxx:xxxx:xxxx:xxxx:xxxx ~all"
-# TXT _dmarc.subdomain "v=DMARC1; p=reject; pct=100"
-# MX subdomain 0 subdomain.domain.com
-# (inserted DNS record from /var/dkim/default.txt)
-# TXT default._domainkey.subomain "v=DKIM1; k=rea; ..."
-#
+# First, set up DNS records for SPF, DMARC, and DKIM. DKIM record can be inserted
+# from /var/dkim/default.txt.
 # To test mail delivery with sendmail:
 # printf "Subject: First newsletter\nThis is our first official newsletter email." | sendmail your@email.com
 
