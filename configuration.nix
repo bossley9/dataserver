@@ -56,6 +56,9 @@ in
     alias nrs="doas nixos-rebuild switch --flake .#"
   '';
 
+  services.postgresql.enable = true;
+  services.postgresql.package = pkgs.postgresql_14;
+
   security = {
     sudo.enable = false;
     doas = {
