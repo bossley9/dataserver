@@ -3,7 +3,7 @@
 {
   services.nextcloud = {
     enable = true;
-    package = pkgs.nextcloud26;
+    package = pkgs.nextcloud27;
     hostName = "drive.bossley.us";
     config = {
       adminuser = "admin";
@@ -28,7 +28,7 @@
       "opcache.jit_buffer_size" = "128M";
     };
     https = true;
-    maxUploadSize = "4G";
+    maxUploadSize = "5G";
     enableImagemagick = false; # see https://github.com/nextcloud/server/issues/13099
     extraOptions = {
       mail_smtpmode = "sendmail";
