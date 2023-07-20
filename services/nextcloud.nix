@@ -13,7 +13,9 @@
       dbname = "nextcloud";
       dbtype = "pgsql";
       dbuser = "nextcloud";
+      overwriteProtocol = "https";
     };
+    logLevel = 3;
     caching.redis = true;
     configureRedis = true;
     phpOptions = {
@@ -31,6 +33,7 @@
     maxUploadSize = "5G";
     enableImagemagick = false; # see https://github.com/nextcloud/server/issues/13099
     extraOptions = {
+      debug = false;
       mail_smtpmode = "sendmail";
       mail_smtpport = 25;
       mail_domain = "mail.bossley.us";
