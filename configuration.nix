@@ -46,6 +46,7 @@ in
   environment.systemPackages = with pkgs; [
     neovim
     git
+    htop
   ];
   environment.shellInit = ''
     umask 0077
@@ -131,11 +132,6 @@ in
         forceSSL = true;
         enableACME = true;
         locations."/".proxyPass = "http://localhost:8002";
-      };
-      "git.bossley.us" = {
-        forceSSL = true;
-        enableACME = true;
-        locations."/".proxyPass = "http://localhost:8003";
       };
       "drive.bossley.us" = {
         forceSSL = true;

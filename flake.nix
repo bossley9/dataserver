@@ -13,7 +13,6 @@
           ./configuration.nix
           ./services/mailserver.nix
           ./services/miniflux.nix
-          ./services/gitea.nix
           ./services/nextcloud.nix
         ];
       };
