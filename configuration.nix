@@ -74,6 +74,7 @@ in
   services.openssh = {
     enable = true;
     allowSFTP = true;
+    ports = [ 24 ];
     settings = {
       PasswordAuthentication = false;
       PermitRootLogin = "no";
@@ -105,7 +106,7 @@ in
   networking.firewall = {
     enable = true;
     allowedTCPPorts = [
-      22 # OpenSSH (automatically allowed but explicitly adding for sanity)
+      24 # OpenSSH (custom port to block extraneous attempts)
       80 # HTTP
       443 # HTTPS
       25 # SMTP
