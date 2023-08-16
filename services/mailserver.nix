@@ -1,8 +1,11 @@
 # Send-only postfix mail server for password reset and notification emails, mostly.
 # First, set up DNS records for SPF, DMARC, and DKIM. DKIM record can be inserted
 # from /var/dkim/default.txt.
+# Then, set up PTR records or reverse DNS (rDNS) to point to the mailDomain.
+# This can usually be done from the host itself (Vultr).
 # To test mail delivery with sendmail:
 # printf "Subject: First newsletter\nThis is our first official newsletter email." | sendmail your@email.com
+# You can view logs in /var/log/postfix.log.
 
 { config, lib, pkgs, ... }:
 
