@@ -124,17 +124,17 @@ in
     recommendedTlsSettings = true;
     recommendedProxySettings = true;
     virtualHosts = {
-      "news.bossley.us" = {
+      "news.bossley.xyz" = {
         forceSSL = true;
         enableACME = true;
         locations."/".proxyPass = "http://localhost:8001";
       };
-      "feedme.bossley.us" = {
+      "feedme.bossley.xyz" = {
         forceSSL = true;
         enableACME = true;
         locations."/".proxyPass = "http://localhost:8002";
       };
-      "drive.bossley.us" = {
+      "drive.bossley.xyz" = {
         forceSSL = true;
         enableACME = true;
       };

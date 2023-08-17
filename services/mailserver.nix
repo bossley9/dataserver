@@ -10,7 +10,7 @@
 { config, lib, pkgs, ... }:
 
 let
-  mailDomain = "mail.bossley.us";
+  mailDomain = "mail.bossley.xyz";
 
   dkimDir = "/var/dkim";
   dkimSelector = "default";

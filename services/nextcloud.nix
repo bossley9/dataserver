@@ -4,7 +4,7 @@
   services.nextcloud = {
     enable = true;
     package = pkgs.nextcloud27;
-    hostName = "drive.bossley.us";
+    hostName = "drive.bossley.xyz";
     config = {
       adminuser = "admin";
       adminpassFile = "${pkgs.writeText "nextcloud-initial-credentials" "test1234!"}";
@@ -36,7 +36,7 @@
       debug = false;
       mail_smtpmode = "sendmail";
       mail_smtpport = 25;
-      mail_domain = "mail.bossley.us";
+      mail_domain = "mail.bossley.xyz";
     };
   };
   # ensure Postgres DB setup happens before Nextcloud

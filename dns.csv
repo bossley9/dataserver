@@ -1,8 +1,8 @@
-A,drive,108.61.214.55,1 HR
-A,feedme,108.61.214.55,1 HR
-A,mail,108.61.214.55,1 HR
-A,news,108.61.214.55,1 HR
-MX,mail,mail.bossley.us. (Priority: 0),1 HR
-TXT,default._domainkey.mail,v=DKIM1; k=rsa; p=MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAsEW6PApP3ixpZiq9zhBSPtCeUra0b+RBYkdV/adWPso4cgN+swSyF9lT04rMSaPSiGBvrV+ojqCS57ahFYxy/xOihBTsVJut+brslCLnvxScOoCR/77/EMCDsX/iWUKvAbiWoXjgF6PgQuiyD3BGQkMB6VqJNYnZos+P7Mupbz4Iuuw0SdVOqfbsKFpZUUdDI+sCwn/O+9Y8T0/3ia/792rz6ehWSnPii7GC7H26W/hL/VsPq3kHkH/2eK+MDIHFGxStofOHlqome1WQeKV6JhiA5dOcsHe5/8HySrsoOGecuCAZO1cBYG0sbGmjPbWIIWc9cSRVETowDop6oySvmQIDAQAB,1 HR
-TXT,mail,v=spf1 ip4:108.61.214.55 ip6:2001:19f0:6001:5a01:5400:04ff:fe68:843b ~all,1 HR
-TXT,_dmarc.mail,v=DMARC1; p=reject; pct=100,1 HR
+A,drive,108.61.214.55,600
+A,feedme,108.61.214.55,600
+A,mail,108.61.214.55,600
+A,news,108.61.214.55,600
+MX,mail,mail.bossley.xyz. (Priority: 0),600
+TXT,default._domainkey.mail,v=DKIM1; k=rsa; p=MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAsEW6PApP3ixpZiq9zhBSPtCeUra0b+RBYkdV/adWPso4cgN+swSyF9lT04rMSaPSiGBvrV+ojqCS57ahFYxy/xOihBTsVJut+brslCLnvxScOoCR/77/EMCDsX/iWUKvAbiWoXjgF6PgQuiyD3BGQkMB6VqJNYnZos+P7Mupbz4Iuuw0SdVOqfbsKFpZUUdDI+sCwn/O+9Y8T0/3ia/792rz6ehWSnPii7GC7H26W/hL/VsPq3kHkH/2eK+MDIHFGxStofOHlqome1WQeKV6JhiA5dOcsHe5/8HySrsoOGecuCAZO1cBYG0sbGmjPbWIIWc9cSRVETowDop6oySvmQIDAQAB,600
+TXT,mail,v=spf1 ip4:108.61.214.55 ip6:2001:19f0:6001:5a01:5400:04ff:fe68:843b ~all,600
+TXT,_dmarc.mail,v=DMARC1; p=reject; pct=100,600
