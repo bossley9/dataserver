@@ -14,7 +14,7 @@ let
       sha256 = "03mspgxnyim1p7yz5q1pwpnybrzm16xgf3jxqzvnzq2hmcam0f5b";
     };
 
-    vendorSha256 = "sha256-OmGzqndx1cMhovode9w9XJ7BOJmjz+9ntYMRL5MEVm0=";
+    vendorHash = "sha256-OmGzqndx1cMhovode9w9XJ7BOJmjz+9ntYMRL5MEVm0=";
 
     meta = with lib; {
       description = "An Atom feed generator";
